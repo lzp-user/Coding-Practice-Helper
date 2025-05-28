@@ -1,181 +1,22 @@
-# SpringBoot 项目初始模板
-
-> 作者：[程序员鱼皮](https://github.com/liyupi)
-> 仅分享于 [编程导航知识星球](https://yupi.icu)
-
-基于 Java SpringBoot 的项目初始模板，整合了常用框架和主流业务的示例代码。
-
-只需 1 分钟即可完成内容网站的后端！！！大家还可以在此基础上快速开发自己的项目。
-
-[toc]
-
-## 模板特点
-
-### 主流框架 & 特性
-
-- Spring Boot 2.7.x（贼新）
-- Spring MVC
-- MyBatis + MyBatis Plus 数据访问（开启分页）
-- Spring Boot 调试工具和项目处理器
-- Spring AOP 切面编程
-- Spring Scheduler 定时任务
-- Spring 事务注解
-
-### 数据存储
-
-- MySQL 数据库
-- Redis 内存数据库
-- Elasticsearch 搜索引擎
-- 腾讯云 COS 对象存储
-
-### 工具类
-
-- Easy Excel 表格处理
-- Hutool 工具库
-- Apache Commons Lang3 工具类
-- Lombok 注解
-
-### 业务特性
-
-- 业务代码生成器（支持自动生成 Service、Controller、数据模型代码）
-- Spring Session Redis 分布式登录
-- 全局请求响应拦截器（记录日志）
-- 全局异常处理器
-- 自定义错误码
-- 封装通用响应类
-- Swagger + Knife4j 接口文档
-- 自定义权限注解 + 全局校验
-- 全局跨域处理
-- 长整数丢失精度解决
-- 多环境配置
-
-
-## 业务功能
-
-- 提供示例 SQL（用户、帖子、帖子点赞、帖子收藏表）
-- 用户登录、注册、注销、更新、检索、权限管理
-- 帖子创建、删除、编辑、更新、数据库检索、ES 灵活检索
-- 帖子点赞、取消点赞
-- 帖子收藏、取消收藏、检索已收藏帖子
-- 帖子全量同步 ES、增量同步 ES 定时任务
-- 支持微信开放平台登录
-- 支持微信公众号订阅、收发消息、设置菜单
-- 支持分业务的文件上传
-
-### 单元测试
-
-- JUnit5 单元测试
-- 示例单元测试类
-
-### 架构设计
-
-- 合理分层
-
-
-## 快速上手
-
-> 所有需要修改的地方鱼皮都标记了 `todo`，便于大家找到修改的位置~
-
-### MySQL 数据库
-
-1）修改 `application.yml` 的数据库配置为你自己的：
-
-```yml
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/mianshiya
-    username: root
-    password: 123456
-```
-
-2）执行 `sql/create_table.sql` 中的数据库语句，自动创建库表
-
-3）启动项目，访问 `http://localhost:8101/api/doc.html` 即可打开接口文档，不需要写前端就能在线调试接口了~
-
-![](doc/swagger.png)
-
-### Redis 分布式登录
-
-1）修改 `application.yml` 的 Redis 配置为你自己的：
-
-```yml
-spring:
-  redis:
-    database: 1
-    host: localhost
-    port: 6379
-    timeout: 5000
-    password: 123456
-```
-
-2）修改 `application.yml` 中的 session 存储方式：
-
-```yml
-spring:
-  session:
-    store-type: redis
-```
-
-3）移除 `MainApplication` 类开头 `@SpringBootApplication` 注解内的 exclude 参数：
-
-修改前：
-
-```java
-@SpringBootApplication(exclude = {RedisAutoConfiguration.class})
-```
-
-修改后：
-
-
-```java
-@SpringBootApplication
-```
-
-### Elasticsearch 搜索引擎
-
-1）修改 `application.yml` 的 Elasticsearch 配置为你自己的：
-
-```yml
-spring:
-  elasticsearch:
-    uris: http://localhost:9200
-    username: root
-    password: 123456
-```
-
-2）复制 `sql/post_es_mapping.json` 文件中的内容，通过调用 Elasticsearch 的接口或者 Kibana Dev Tools 来创建索引（相当于数据库建表）
-
-```
-PUT post_v1
-{
- 参数见 sql/post_es_mapping.json 文件
-}
-```
-
-这步不会操作的话需要补充下 Elasticsearch 的知识，或者自行百度一下~
-
-3）开启同步任务，将数据库的帖子同步到 Elasticsearch
-
-找到 job 目录下的 `FullSyncPostToEs` 和 `IncSyncPostToEs` 文件，取消掉 `@Component` 注解的注释，再次执行程序即可触发同步：
-
-```java
-// todo 取消注释开启任务
-//@Component
-```
-
-### 业务代码生成器
-
-支持自动生成 Service、Controller、数据模型代码，配合 MyBatisX 插件，可以快速开发增删改查等实用基础功能。
-
-找到 `generate.CodeGenerator` 类，修改生成参数和生成路径，并且支持注释掉不需要的生成逻辑，然后运行即可。
-
-```
-// 指定生成参数
-String packageName = "com.yupi.mianshiya";
-String dataName = "用户评论";
-String dataKey = "userComment";
-String upperDataKey = "UserComment";
-```
-
-生成代码后，可以移动到实际项目中，并且按照 `// todo` 注释的提示来针对自己的业务需求进行修改。
+1.基于自己开发的SpringBoot项目模板+MyBatisX插件+自定义代码生成器，快速生成各表基础业务代码。
+2.刷题记录：基于RedisBitMap+Redisson实现用户年度刷题记录的统计，相比数据库存储节约几百倍空间。并通过本地缓
+存+返回值优化+位运算进一步提升接口性能。（感兴趣的同学可以自行测试优化性能的效果）
+3.分词搜索：自主搭建ES代替MySQL模糊查询，并通过为索引I绑定ik分词器实现了更灵活的分词搜索。
+4.采用动静分离策略构建ES题目索引，仅存储需要检索且修改不频繁的字段，而将修改频繁的字段(如点赞数）从数据库中关联查询，从而
+减少了ES数据同步更新的成本、保证数据一致性。
+5.开发搜索功能时,使用Kibana DevTools+DSL调试ES的搜索效果，并使用Spring DataElasticsearch的QueryBuilder组合查询条件，实
+现对题目的灵活查询。
+6.使用SpringScheduler定时同步近期发生更新的MySQL题目到ES，并通过唯一id保证每条数据同步的准确性。
+7.基于MyBatis的batch操作实现题目批量管理，并通过任务拆分+CompletableFuture并发编程提升批处理性能。
+8.引入Druid连接池来监控慢SQL，并通过调整连接数配置，进一步提升了批量操作的性能。
+9.使用Caffeine本地缓存提升题库查询性能，并通过接入Hotkey并配置热key探测规则来自动缓存热门题目，防止瞬时流量击垮数据库。
+10.为保护系统，基于Sentinel注解+Dashboard对获取题库列表接口进行限流，并通过fallbackHandler配置熔断，调用异常率超过10%时
+直接返回本地缓存。
+11.为保护系统，基于Sentinel的热点参数限流机制对单IP获取题目进行流控，并通过拉模式配置将规则持久化到
+本地文件。
+12.为限制恶意用户访问，基于WebFilter+BloomFilter实现IP黑名单拦截，并通过Nacos配置中心动态更新黑名单，便于维护。
+13.为防止账号共享，通过UserAgent识别用户设备，并基于Sa-Token快速实现同端登录冲突检测。
+14.设计分级反爬虫策略：基于Redis实现用户访问题目频率统计，并通过Lua脚本保证原子更新，超限时自动给管理员发送告警和封禁用户，有效
+防止内容盗取。
+15.通过宝塔Linux的Java项目管理器部署jar包，并通过Nginx配置反向代理解决跨域问题。
+16.使用Knife4j+Swagger自动生成后端接口文档，并通过编写ApiOperation等注解补充接口注释，避免了人工编写维护文档的麻烦。
